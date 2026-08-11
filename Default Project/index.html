@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>t1s</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(160deg, #1a1d29 0%, #232946 50%, #2c3e50 100%);
+      color: #eef1f7;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 16px;
+      padding-top: 60px;
+    }
+
+    .tagline {
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      font-weight: 300;
+      letter-spacing: 0.05em;
+      color: #9ba6c9;
+    }
+
+    h1 {
+      font-size: clamp(4.5rem, 13vw, 11rem);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: linear-gradient(120deg, #f6f7fb, #9ba6c9, #6b7fae);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      user-select: none;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      padding: 16px 32px;
+      background: rgba(26, 29, 41, 0.85);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      z-index: 10;
+    }
+
+    nav a {
+      color: #9ba6c9;
+      text-decoration: none;
+      font-size: 1rem;
+      letter-spacing: 0.05em;
+      padding: 8px 16px;
+      border-radius: 6px;
+      transition: color 0.2s, background 0.2s;
+    }
+
+    nav a:hover {
+      color: #f6f7fb;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    nav a.active {
+      color: #f6f7fb;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .image-area {
+      margin-top: 120px;
+      padding: 24px 32px 48px;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(4px);
+    }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .image-card {
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      border-radius: 12px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.05);
+      transition: transform 0.1s ease-out;
+      transform-style: preserve-3d;
+      will-change: transform;
+      cursor: pointer;
+    }
+
+    .image-card img {
+      display: block;
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .image-caption {
+      padding: 10px 12px;
+      font-size: 0.85rem;
+      color: #9ba6c9;
+      letter-spacing: 0.04em;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      text-align: left;
+    }
+
+    .image-caption p {
+      margin: 2px 0;
+    }
+
+    .title-anim {
+      animation: titleEntrance 3.2s cubic-bezier(0.45, 0, 0.25, 1) both;
+    }
+
+    @keyframes titleEntrance {
+      0% {
+        opacity: 0;
+        transform: translateY(38vh) scale(4);
+        filter: blur(8px);
+      }
+      25% {
+        opacity: 1;
+        transform: translateY(38vh) scale(4);
+        filter: blur(8px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+      }
+    }
+
+    .reveal-in {
+      animation: revealIn 1.2s cubic-bezier(0.45, 0, 0.25, 1) both;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 72px;
+      right: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 20;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      text-decoration: none;
+      transition: border-color 0.2s, background 0.2s, transform 0.2s;
+    }
+
+    .sidebar a svg {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
+    .sidebar a:hover {
+      border-color: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.12);
+      transform: scale(1.1);
+    }
+
+    @keyframes revealIn {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+        filter: blur(4px);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+        filter: blur(0);
+      }
+    }
+
+    #intro {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(160deg, #1a1d29 0%, #232946 50%, #2c3e50 100%);
+      z-index: 100;
+      perspective: 800px;
+      transition: opacity 0.8s ease;
+    }
+
+    #intro.hide {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .intro-t {
+      position: relative;
+      animation: introTHover 3.8s linear both;
+      transform-style: preserve-3d;
+    }
+
+    .t-letter {
+      font-size: clamp(9rem, 26vw, 22rem);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      background: linear-gradient(120deg, #f6f7fb, #9ba6c9, #6b7fae);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmer 3.8s linear infinite;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 0% 50%;
+      }
+      100% {
+        background-position: 200% 50%;
+      }
+    }
+
+    @keyframes skim {
+      0% {
+        opacity: 0;
+        bottom: 5%;
+        transform: rotate(12deg);
+      }
+      12% {
+        opacity: 1;
+        transform: rotate(15deg);
+      }
+      30% {
+        bottom: 24%;
+        transform: rotate(11deg);
+      }
+      50% {
+        bottom: 40%;
+        transform: rotate(15deg);
+      }
+      70% {
+        bottom: 56%;
+        transform: rotate(11deg);
+      }
+      90% {
+        bottom: 70%;
+        opacity: 1;
+        transform: rotate(15deg);
+      }
+      100% {
+        opacity: 0;
+        bottom: 76%;
+        transform: rotate(12deg);
+      }
+    }
+
+    @keyframes introTHover {
+      0% {
+        opacity: 0;
+        transform: translate(5vw, -50vh) rotateX(40deg) scale(3.2);
+      }
+      10% {
+        opacity: 1;
+        transform: translate(5vw, -50vh) rotateX(40deg) scale(3.2);
+      }
+      30% {
+        transform: translate(5vw, -25vh) rotateX(25deg) scale(3.2);
+      }
+      50% {
+        transform: translate(5vw, -8vh) rotateX(10deg) scale(3.2);
+      }
+      70% {
+        transform: translate(5vw, 8vh) rotateX(-4deg) scale(3.2);
+      }
+      85% {
+        transform: translate(5vw, 20vh) rotateX(-10deg) scale(3.2);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(5vw, 30vh) rotateX(-12deg) scale(3.2);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="intro">
+    <div class="intro-t">
+      <span class="t-letter">T</span>
+    </div>
+  </div>
+  <nav>
+    <a href="index.html" class="active">Landing Page</a>
+    <a href="contacts.html">Contacts</a>
+  </nav>
+  <aside class="sidebar">
+    <a href="#" title="Snapchat">
+      <svg viewBox="0 0 24 24" fill="#FFFC00">
+        <path d="M12 2c3.2 0 5.6 2.4 5.6 5.9 0 1.9.6 3.6 1.3 4.8.2.3.4.4.7.4 1 0 2-.6 2.6-.6.5 0 .8.3.8.7 0 1.4-2.6 2.8-5.3 3.2-.2 0-.3.1-.4.3-.1.5-.5 1-1.7 1-1.2 0-1.6-.5-1.8-.5-.2 0-.6.5-1.8.5-1.2 0-1.6-.5-1.8-.5-.2 0-.6.5-1.8.5-1.2 0-1.6-.5-1.7-1-.1-.2-.2-.3-.4-.3C4.2 15.8 1.6 14.4 1.6 13c0-.4.3-.7.8-.7.6 0 1.6.6 2.6.6.3 0 .5-.1.7-.4.7-1.2 1.3-2.9 1.3-4.8C6.4 4.4 8.8 2 12 2z"/>
+      </svg>
+    </a>
+    <a href="mailto:contact@t1s.com" title="Email">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#eef1f7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="4" width="20" height="16" rx="2"/>
+        <path d="M22 7l-10 6L2 7"/>
+      </svg>
+    </a>
+    <a href="#" title="YouTube">
+      <svg viewBox="0 0 24 24" fill="#FF0000">
+        <path d="M8 5.5v13l11-6.5z"/>
+      </svg>
+    </a>
+  </aside>
+  <main>
+    <h1>t1s</h1>
+    <p class="tagline">"A place where you can share Ideas that are revolutionary." - T3V@N</p>
+  </main>
+  <footer class="image-area">
+    <div class="image-grid">
+      <div class="image-card">
+        <img src="first-image.jpg" alt="Photo">
+        <div class="image-caption">
+          <p>Invantion name : pressure Machine</p>
+          <p>Idea-ist : - T3VN</p>
+          <p>Problem Solved : Natural Energy</p>
+        </div>
+      </div>
+      <div class="image-card">
+        <img src="https://picsum.photos/seed/t1s2/600/400" alt="Photo">
+        <div class="image-caption">
+          <p>Invantion name :</p>
+          <p>Idea-ist :</p>
+          <p>Problem Solved :</p>
+        </div>
+      </div>
+      <div class="image-card">
+        <img src="https://picsum.photos/seed/t1s3/600/400" alt="Photo">
+        <div class="image-caption">
+          <p>Invantion name :</p>
+          <p>Idea-ist :</p>
+          <p>Problem Solved :</p>
+        </div>
+      </div>
+      <div class="image-card">
+        <img src="https://picsum.photos/seed/t1s4/600/400" alt="Photo">
+        <div class="image-caption">
+          <p>Invantion name :</p>
+          <p>Idea-ist :</p>
+          <p>Problem Solved :</p>
+        </div>
+      </div>
+      <div class="image-card">
+        <img src="https://picsum.photos/seed/t1s5/600/400" alt="Photo">
+        <div class="image-caption">
+          <p>Invantion name :</p>
+          <p>Idea-ist :</p>
+          <p>Problem Solved :</p>
+        </div>
+      </div>
+      <div class="image-card">
+        <img src="https://picsum.photos/seed/t1s6/600/400" alt="Photo">
+        <div class="image-caption">
+          <p>Invantion name :</p>
+          <p>Idea-ist :</p>
+          <p>Problem Solved :</p>
+        </div>
+      </div>
+      <div class="image-card">
+        <img src="https://picsum.photos/seed/t1s7/600/400" alt="Photo">
+        <div class="image-caption">
+          <p>Invantion name :</p>
+          <p>Idea-ist :</p>
+          <p>Problem Solved :</p>
+        </div>
+      </div>
+      <div class="image-card">
+        <img src="https://picsum.photos/seed/t1s8/600/400" alt="Photo">
+        <div class="image-caption">
+          <p>Invantion name :</p>
+          <p>Idea-ist :</p>
+          <p>Problem Solved :</p>
+        </div>
+      </div>
+      <div class="image-card">
+        <img src="https://picsum.photos/seed/t1s9/600/400" alt="Photo">
+        <div class="image-caption">
+          <p>Invantion name :</p>
+          <p>Idea-ist :</p>
+          <p>Problem Solved :</p>
+        </div>
+      </div>
+      <div class="image-card">
+        <img src="https://picsum.photos/seed/t1s10/600/400" alt="Photo">
+        <div class="image-caption">
+          <p>Invantion name :</p>
+          <p>Idea-ist :</p>
+          <p>Problem Solved :</p>
+        </div>
+      </div>
+      <div class="image-card">
+        <img src="https://picsum.photos/seed/t1s11/600/400" alt="Photo">
+        <div class="image-caption">
+          <p>Invantion name :</p>
+          <p>Idea-ist :</p>
+          <p>Problem Solved :</p>
+        </div>
+      </div>
+      <div class="image-card">
+        <img src="https://picsum.photos/seed/t1s12/600/400" alt="Photo">
+        <div class="image-caption">
+          <p>Invantion name :</p>
+          <p>Idea-ist :</p>
+          <p>Problem Solved :</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script>
+    var intro = document.getElementById('intro');
+    var title = document.querySelector('h1');
+    var others = document.querySelectorAll('nav, .tagline, .image-area');
+
+    setTimeout(function () {
+      intro.classList.add('hide');
+      setTimeout(function () { intro.remove(); }, 900);
+
+      title.classList.add('title-anim');
+
+      others.forEach(function (el, i) {
+        el.style.opacity = '0';
+        el.style.animationDelay = (0.9 + i * 0.15) + 's';
+        el.classList.add('reveal-in');
+        el.addEventListener('animationend', function () {
+          el.classList.remove('reveal-in');
+          el.style.animationDelay = '';
+          el.style.opacity = '';
+        }, { once: true });
+      });
+    }, 3450);
+
+    document.querySelectorAll('.image-card').forEach(function (card) {
+      card.addEventListener('mousemove', function (e) {
+        var rect = card.getBoundingClientRect();
+        var x = (e.clientX - rect.left) / rect.width - 0.5;
+        var y = (e.clientY - rect.top) / rect.height - 0.5;
+        card.style.transform = 'scale(1.03) rotateX(' + (y * 45) + 'deg) rotateY(' + (-x * 45) + 'deg)';
+      });
+      card.addEventListener('mouseleave', function () {
+        card.style.transform = 'scale(1) rotateX(0deg) rotateY(0deg)';
+      });
+      card.addEventListener('click', function () {
+        var img = card.querySelector('img');
+        var fields = card.querySelectorAll('.image-caption p');
+        var name = fields[0] ? fields[0].textContent : '';
+        var idea = fields[1] ? fields[1].textContent : '';
+        var problem = fields[2] ? fields[2].textContent : '';
+        var params = 'src=' + encodeURIComponent(img.src) +
+          '&name=' + encodeURIComponent(name) +
+          '&idea=' + encodeURIComponent(idea) +
+          '&problem=' + encodeURIComponent(problem);
+        window.location.href = 'view.html?' + params;
+      });
+    });
+  </script>
+</body>
+</html>

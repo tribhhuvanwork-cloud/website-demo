@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contacts - t1s</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(160deg, #1a1d29 0%, #232946 50%, #2c3e50 100%);
+      color: #eef1f7;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      padding: 16px 32px;
+      background: rgba(26, 29, 41, 0.85);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      z-index: 10;
+    }
+
+    nav a {
+      color: #9ba6c9;
+      text-decoration: none;
+      font-size: 1rem;
+      letter-spacing: 0.05em;
+      padding: 8px 16px;
+      border-radius: 6px;
+      transition: color 0.2s, background 0.2s;
+    }
+
+    nav a:hover {
+      color: #f6f7fb;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    nav a.active {
+      color: #f6f7fb;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 40px;
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      background: linear-gradient(120deg, #f6f7fb, #9ba6c9, #6b7fae);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p {
+      color: #9ba6c9;
+      font-size: 1.1rem;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html">Landing Page</a>
+    <a href="contacts.html" class="active">Contacts</a>
+  </nav>
+  <main>
+    <h1>Contacts</h1>
+    <p>Contact page coming soon.</p>
+  </main>
+</body>
+</html>

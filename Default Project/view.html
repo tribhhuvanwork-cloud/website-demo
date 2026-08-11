@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View - t1s</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(160deg, #1a1d29 0%, #232946 50%, #2c3e50 100%);
+      color: #eef1f7;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      padding: 16px 32px;
+      background: rgba(26, 29, 41, 0.85);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      z-index: 10;
+    }
+
+    nav a {
+      color: #9ba6c9;
+      text-decoration: none;
+      font-size: 1rem;
+      letter-spacing: 0.05em;
+      padding: 8px 16px;
+      border-radius: 6px;
+      transition: color 0.2s, background 0.2s;
+    }
+
+    nav a:hover {
+      color: #f6f7fb;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 40px 24px;
+    }
+
+    .banner {
+      display: block;
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 75vh;
+      border-radius: 12px;
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    }
+
+    .viewer {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      justify-content: center;
+      width: 100%;
+      max-width: 1400px;
+      flex-wrap: wrap;
+    }
+
+    .viewer-left {
+      flex: 1 1 400px;
+      min-width: 280px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .banner-wrap {
+      position: relative;
+      width: fit-content;
+      max-width: 100%;
+      overflow: hidden;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .description {
+      width: 100%;
+      max-width: 1200px;
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 20px 24px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .how-it-works {
+      flex: 0 0 320px;
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 20px 24px;
+    }
+
+    .how-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #f6f7fb;
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .how-it-works p {
+      margin: 8px 0;
+      font-size: 1rem;
+      color: #9ba6c9;
+      letter-spacing: 0.04em;
+      line-height: 1.5;
+    }
+
+    .description:hover {
+      border-color: rgba(255, 255, 255, 0.45);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .description p {
+      margin: 6px 0;
+      font-size: 1.1rem;
+      color: #9ba6c9;
+      letter-spacing: 0.04em;
+    }
+
+    .description p strong {
+      color: #eef1f7;
+      font-weight: 600;
+    }
+
+    .description .hint {
+      font-size: 0.85rem;
+      color: #6b7fae;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .more-info {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+    }
+
+    .more-info p {
+      margin: 6px 0;
+      font-size: 1rem;
+      color: #9ba6c9;
+      letter-spacing: 0.04em;
+    }
+
+    .more-info p strong {
+      color: #eef1f7;
+      font-weight: 600;
+    }
+
+    .more-info.open {
+      max-height: 600px;
+    }
+
+    .triangles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 5;
+    }
+
+    .triangle {
+      position: absolute;
+      top: -60px;
+      width: 0;
+      height: 0;
+      border-left: 18px solid transparent;
+      border-right: 18px solid transparent;
+      border-bottom: 32px solid rgba(155, 166, 201, 0.4);
+      animation: fall linear forwards;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="triangles" id="triangles"></div>
+  <nav>
+    <a href="index.html">Landing Page</a>
+    <a href="contacts.html">Contacts</a>
+  </nav>
+  <main>
+    <div class="viewer">
+      <div class="viewer-left">
+        <div class="banner-wrap" id="bannerWrap">
+          <img id="banner" class="banner" src="" alt="Banner image">
+        </div>
+        <div class="description" id="description">
+          <p id="name"></p>
+          <p id="idea"></p>
+          <p id="problem"></p>
+          <p class="hint" id="hint">Click for more information</p>
+          <div class="more-info" id="moreInfo">
+            <p id="moreName"></p>
+            <p id="moreIdea"></p>
+            <p id="moreProblem"></p>
+            <p><strong>Status :</strong> In development.</p>
+            <p><strong>Posted by :</strong> T3V@N</p>
+          </div>
+        </div>
+      </div>
+      <div class="how-it-works">
+        <div class="how-title">How it works</div>
+        <p id="howText">Here is a placeholder explaining how this invention works. Replace this text with the actual working principle of the idea.</p>
+      </div>
+    </div>
+  </main>
+  <script>
+    var params = new URLSearchParams(window.location.search);
+    var banner = document.getElementById('banner');
+    var src = params.get('src') || 'https://picsum.photos/seed/default/1200/500';
+    if (src.indexOf('http') === 0) {
+      banner.crossOrigin = 'anonymous';
+    }
+    banner.src = src;
+    var name = params.get('name') || 'Invantion name :';
+    var idea = params.get('idea') || 'Idea-ist :';
+    var problem = params.get('problem') || 'Problem Solved :';
+    document.getElementById('name').innerHTML = '<strong>' + name + '</strong>';
+    document.getElementById('idea').innerHTML = '<strong>' + idea + '</strong>';
+    document.getElementById('problem').innerHTML = '<strong>' + problem + '</strong>';
+    document.getElementById('moreName').innerHTML = '<strong>Details :</strong> ' + name.replace(/^[^:]*:\s*/, '') || name;
+    document.getElementById('moreIdea').innerHTML = '<strong>Idea-ist :</strong> ' + idea.replace(/^[^:]*:\s*/, '') || idea;
+    document.getElementById('moreProblem').innerHTML = '<strong>Problem Solved :</strong> ' + problem.replace(/^[^:]*:\s*/, '') || problem;
+
+    var container = document.getElementById('triangles');
+
+    function sampleColors(img, count) {
+      var canvas = document.createElement('canvas');
+      var size = 16;
+      canvas.width = size;
+      canvas.height = size;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, size, size);
+      var data = ctx.getImageData(0, 0, size, size).data;
+      var colors = [];
+      var seen = {};
+      for (var i = 0; i < data.length && colors.length < count; i += 4) {
+        var r = data[i], g = data[i + 1], b = data[i + 2];
+        var lum = 0.299 * r + 0.587 * g + 0.114 * b;
+        if (lum < 70) continue;
+        r = Math.min(255, Math.round((r - 128) * 1.5 + 128));
+        g = Math.min(255, Math.round((g - 128) * 1.5 + 128));
+        b = Math.min(255, Math.round((b - 128) * 1.5 + 128));
+        var key = r + ',' + g + ',' + b;
+        if (seen[key]) continue;
+        seen[key] = true;
+        colors.push('rgba(' + r + ',' + g + ',' + b + ',0.8)');
+      }
+      while (colors.length < count) colors.push('rgba(155,166,201,0.8)');
+      return colors;
+    }
+
+    function spawnTriangles() {
+      var colors;
+      try {
+        colors = sampleColors(banner, 24);
+      } catch (err) {
+        colors = null;
+      }
+      for (var i = 0; i < 24; i++) {
+        var tri = document.createElement('div');
+        tri.className = 'triangle';
+        var side = Math.random() < 0.5 ? 0 : 1;
+        tri.style.left = side === 0 ? (Math.random() * 8) + '%' : (92 + Math.random() * 8) + '%';
+        tri.style.animationDuration = (2.5 + Math.random() * 3.5) + 's';
+        tri.style.animationDelay = (Math.random() * 3) + 's';
+        var size = 0.6 + Math.random() * 0.9;
+        tri.style.transform = 'scale(' + size + ')';
+        if (colors) {
+          tri.style.borderBottomColor = colors[i];
+        }
+        container.appendChild(tri);
+      }
+    }
+
+    document.getElementById('description').addEventListener('click', function () {
+      var moreInfo = document.getElementById('moreInfo');
+      var hint = document.getElementById('hint');
+      var open = moreInfo.classList.toggle('open');
+      hint.textContent = open ? 'Click for less information' : 'Click for more information';
+    });
+
+    if (banner.complete && banner.naturalWidth > 0) {
+      spawnTriangles();
+    } else {
+      banner.addEventListener('load', spawnTriangles);
+      banner.addEventListener('error', spawnTriangles);
+    }
+  </script>
+</body>
+</html>
