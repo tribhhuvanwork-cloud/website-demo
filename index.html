@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vocabulary Bank</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    min-height: 100vh;
+    color: #222;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 16px;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 720px;
+  }
+
+  h1 {
+    color: #fff;
+    text-align: center;
+    margin-bottom: 24px;
+    font-size: 2rem;
+    letter-spacing: 1px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.25);
+    margin-bottom: 20px;
+  }
+
+  .card h2 {
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+    color: #1e3c72;
+  }
+
+  label {
+    display: block;
+    font-size: .85rem;
+    font-weight: 600;
+    color: #555;
+    margin: 10px 0 4px;
+  }
+
+  input[type="text"], textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid #d0d7e2;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color .15s;
+  }
+
+  input[type="text"]:focus, textarea:focus {
+    border-color: #2a5298;
+  }
+
+  textarea { resize: vertical; min-height: 70px; }
+
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
+
+  .grow { flex: 1; min-width: 180px; }
+
+  button {
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    font-size: .95rem;
+    font-weight: 600;
+    padding: 11px 18px;
+    transition: transform .1s, filter .1s;
+    font-family: inherit;
+  }
+
+  button:hover { filter: brightness(1.08); }
+  button:active { transform: scale(.97); }
+
+  .btn-primary { background: #2a5298; color: white; }
+  .btn-quiz { background: #16a34a; color: white; width: 100%; font-size: 1.05rem; padding: 13px; }
+  .btn-danger { background: #dc2626; color: white; padding: 6px 10px; font-size: .8rem; }
+  .btn-check { background: #2a5298; color: white; }
+  .btn-next { background: #16a34a; color: white; }
+  .btn-back { background: #6b7280; color: white; }
+
+  button:disabled { opacity: .5; cursor: not-allowed; }
+
+  .word-list { margin-top: 14px; }
+
+  .word-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    background: #f8fafc;
+  }
+
+  .word-item .word { font-weight: 700; color: #1e3c72; }
+  .word-item .def { font-size: .9rem; color: #555; margin-top: 2px; }
+
+  .count {
+    font-size: .85rem;
+    color: #94a3b8;
+    margin-top: 10px;
+  }
+
+  .hidden { display: none; }
+
+  /* Quiz */
+  .quiz-word {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #1e3c72;
+    text-align: center;
+    margin: 8px 0 4px;
+  }
+
+  .quiz-progress { text-align: center; color: #64748b; font-size: .9rem; margin-bottom: 8px; }
+
+  .feedback { margin-top: 14px; font-weight: 600; }
+
+  .correct { color: #16a34a; }
+  .incorrect { color: #dc2626; }
+
+  .answer-box {
+    background: #f0fdf4;
+    border-left: 4px solid #16a34a;
+    border-radius: 6px;
+    padding: 12px;
+    margin-top: 10px;
+    font-size: .95rem;
+  }
+
+  .answer-box .the-def { font-weight: 600; color: #166534; margin-top: 4px; }
+
+  .quiz-actions { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+
+  .score { font-weight: 600; color: #2a5298; }
+
+  .empty {
+    text-align: center;
+    color: #94a3b8;
+    padding: 20px 0;
+    font-size: .95rem;
+  }
+
+  .action-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .btn-practice { background: #0f766e; color: white; width: 100%; font-size: 1.05rem; padding: 13px; }
+  .btn-secondary { background: #e2e8f0; color: #1e3c72; padding: 8px 12px; font-size: .85rem; }
+
+  .helper-text {
+    color: #64748b;
+    font-size: .9rem;
+    line-height: 1.45;
+    margin-bottom: 14px;
+  }
+
+  .practice-tools { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+
+  .practice-options {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    max-height: 340px;
+    overflow-y: auto;
+  }
+
+  .practice-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 11px 12px;
+    cursor: pointer;
+  }
+
+  .practice-option + .practice-option { border-top: 1px solid #e2e8f0; }
+  .practice-option:hover { background: #f8fafc; }
+  .practice-option.is-unavailable { cursor: not-allowed; opacity: .55; }
+
+  .practice-option input[type="checkbox"] {
+    accent-color: #0f766e;
+    flex: 0 0 auto;
+    height: 18px;
+    margin-top: 2px;
+    width: 18px;
+  }
+
+  .practice-option-copy { min-width: 0; }
+  .practice-option .word { color: #1e3c72; font-weight: 700; }
+  .practice-definition { color: #64748b; font-size: .85rem; line-height: 1.4; margin-top: 2px; }
+
+  .practice-guide {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 1rem;
+    line-height: 1.7;
+    margin: 8px 0 12px;
+    min-height: 58px;
+    padding: 12px;
+    word-break: break-word;
+  }
+
+  .practice-guide .typed { color: #94a3b8; }
+  .practice-guide .next { background: #dbeafe; border-radius: 4px; color: #1e3c72; font-weight: 700; padding: 1px 3px; }
+  .practice-guide .remaining { color: #94a3b8; }
+
+  .practice-feedback { color: #dc2626; font-size: .9rem; font-weight: 600; margin-top: 8px; }
+
+  @media (max-width: 520px) {
+    .action-grid { grid-template-columns: 1fr; }
+    .card { padding: 18px; }
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1 style="color:#fff;text-align:center;margin-bottom:4px;font-size:2rem;">AP World History Vocab Practice Site</h1>
+<div style="text-align:center;margin-top:-8px;font-size:0.8rem;color:#cfe2f3;">Made by Bhuvan</div>
+
+    <div id="home-view">
+    <div class="card" id="add-card">
+      <h2>Add a Word</h2>
+      <div class="row">
+        <div class="grow">
+          <label for="word-input">Word</label>
+          <input type="text" id="word-input" placeholder="e.g. serendipity" autocomplete="off">
+        </div>
+        <button class="btn-primary" id="add-btn">Add</button>
+      </div>
+      <label for="def-input">Definition</label>
+      <textarea id="def-input" placeholder="Your custom definition goes here..."></textarea>
+    </div>
+
+    <div class="card">
+      <h2>Word Bank (<span id="word-count">0</span>)</h2>
+      <div class="word-list" id="word-list"></div>
+    </div>
+
+    <div class="card">
+      <h2>Download &amp; Backup</h2>
+      <div class="quiz-actions">
+        <button class="btn-primary" id="download-app-btn">&#11015; Download App (.html)</button>
+        <button class="btn-primary" id="export-btn">&#11015; Export Word Bank (.json)</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="action-grid">
+        <button class="btn-quiz" id="quiz-btn">Start Quiz</button>
+        <button class="btn-practice" id="open-practice-btn">Practice Typing</button>
+      </div>
+    </div>
+    </div>
+
+    <div class="card hidden" id="quiz-select-card">
+      <h2>Choose Words for Quiz</h2>
+      <p class="helper-text">Select one or more words to test. Words without a definition cannot be tested.</p>
+      <div class="practice-tools">
+        <button class="btn-secondary" id="select-all-quiz-btn">Select All</button>
+        <button class="btn-secondary" id="clear-quiz-btn">Clear</button>
+      </div>
+      <div class="practice-options" id="quiz-options"></div>
+      <div class="quiz-actions">
+        <button class="btn-quiz" id="start-selected-quiz-btn" disabled>Start Quiz</button>
+        <button class="btn-back" id="cancel-quiz-btn">Back Home</button>
+      </div>
+    </div>
+
+    <!-- Quiz view -->
+    <div class="card hidden" id="quiz-card">
+      <h2>Quiz</h2>
+      <div class="quiz-progress" id="quiz-progress"></div>
+      <div class="quiz-word" id="quiz-word"></div>
+      <label for="quiz-input">Type the definition:</label>
+      <input type="text" id="quiz-input" placeholder="Type your answer..." autocomplete="off">
+      <div class="feedback hidden" id="feedback"></div>
+      <div class="answer-box hidden" id="answer-box">
+        <span class="correct">Correct definition:</span>
+        <div class="the-def" id="correct-answer"></div>
+      </div>
+      <div class="quiz-actions">
+        <button class="btn-check" id="check-btn">Check Answer</button>
+        <button class="btn-next hidden" id="next-btn">Next Word</button>
+        <button class="btn-back" id="quit-btn">Quit Quiz</button>
+      </div>
+    </div>
+
+    <div class="card hidden" id="practice-select-card">
+      <h2>Choose Words to Practice</h2>
+      <p class="helper-text">Select one or more words. Words without a definition cannot be practiced.</p>
+      <div class="practice-tools">
+        <button class="btn-secondary" id="select-all-practice-btn">Select All</button>
+        <button class="btn-secondary" id="clear-practice-btn">Clear</button>
+      </div>
+      <div class="practice-options" id="practice-options"></div>
+      <div class="quiz-actions">
+        <button class="btn-practice" id="start-practice-btn" disabled>Start Practice</button>
+        <button class="btn-back" id="cancel-practice-btn">Back Home</button>
+      </div>
+    </div>
+
+    <div class="card hidden" id="practice-card">
+      <h2>Guided Typing Practice</h2>
+      <div class="quiz-progress" id="practice-progress"></div>
+      <div class="quiz-word" id="practice-word"></div>
+      <p class="helper-text">A slower voice reads each highlighted group of up to three words.</p>
+      <div class="practice-guide" id="practice-guide" aria-live="polite"></div>
+      <label for="practice-input">Definition</label>
+      <textarea id="practice-input" placeholder="Start typing the definition..." autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
+      <div class="practice-feedback hidden" id="practice-feedback"></div>
+      <div class="quiz-actions">
+        <button class="btn-primary" id="read-practice-btn">Read Highlighted Words</button>
+        <button class="btn-back" id="end-practice-btn">End Practice</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const STORAGE_KEY = "vocabBank";
+
+  const homeView = document.getElementById("home-view");
+  const wordInput = document.getElementById("word-input");
+  const defInput = document.getElementById("def-input");
+  const addBtn = document.getElementById("add-btn");
+  const wordList = document.getElementById("word-list");
+  const wordCount = document.getElementById("word-count");
+  const quizBtn = document.getElementById("quiz-btn");
+  const quizSelectCard = document.getElementById("quiz-select-card");
+  const quizOptions = document.getElementById("quiz-options");
+  const selectAllQuizBtn = document.getElementById("select-all-quiz-btn");
+  const clearQuizBtn = document.getElementById("clear-quiz-btn");
+  const startSelectedQuizBtn = document.getElementById("start-selected-quiz-btn");
+  const cancelQuizBtn = document.getElementById("cancel-quiz-btn");
+
+  const quizCard = document.getElementById("quiz-card");
+  const quizProgress = document.getElementById("quiz-progress");
+  const quizWord = document.getElementById("quiz-word");
+  const quizInput = document.getElementById("quiz-input");
+  const feedback = document.getElementById("feedback");
+  const answerBox = document.getElementById("answer-box");
+  const correctAnswer = document.getElementById("correct-answer");
+  const checkBtn = document.getElementById("check-btn");
+  const nextBtn = document.getElementById("next-btn");
+  const quitBtn = document.getElementById("quit-btn");
+
+  const openPracticeBtn = document.getElementById("open-practice-btn");
+  const practiceSelectCard = document.getElementById("practice-select-card");
+  const practiceOptions = document.getElementById("practice-options");
+  const selectAllPracticeBtn = document.getElementById("select-all-practice-btn");
+  const clearPracticeBtn = document.getElementById("clear-practice-btn");
+  const startPracticeBtn = document.getElementById("start-practice-btn");
+  const cancelPracticeBtn = document.getElementById("cancel-practice-btn");
+  const practiceCard = document.getElementById("practice-card");
+  const practiceProgress = document.getElementById("practice-progress");
+  const practiceWord = document.getElementById("practice-word");
+  const practiceGuide = document.getElementById("practice-guide");
+  const practiceInput = document.getElementById("practice-input");
+  const practiceFeedback = document.getElementById("practice-feedback");
+  const readPracticeBtn = document.getElementById("read-practice-btn");
+  const endPracticeBtn = document.getElementById("end-practice-btn");
+
+  let storageOk = true;
+  let storageError = "";
+
+  function loadWords() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      storageOk = false;
+      storageError = String(e);
+      return [];
+    }
+  }
+
+  function saveWords(words) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(words));
+      storageOk = true;
+    } catch (e) {
+      storageOk = false;
+      storageError = String(e);
+    }
+  }
+
+  let words = loadWords();
+  let quizQueue = [];
+  let quizIndex = 0;
+  let quizCorrect = 0;
+  let currentCard = null;
+  let quizSelection = new Set();
+  let practiceSelection = new Set();
+  let practiceQueue = [];
+  let practiceIndex = 0;
+  let practiceAdvancing = false;
+  let practiceVoice = null;
+  let lastSpokenPracticeHint = "";
+
+  function renderWordList() {
+    wordCount.textContent = words.length;
+    if (words.length === 0) {
+      wordList.innerHTML = '<div class="empty">No words yet. Add some above!</div>';
+      return;
+    }
+    wordList.innerHTML = "";
+    words.forEach((item, i) => {
+      const div = document.createElement("div");
+      div.className = "word-item";
+      const text = document.createElement("div");
+      const wordEl = document.createElement("div");
+      wordEl.className = "word";
+      wordEl.textContent = item.word;
+      const defEl = document.createElement("div");
+      defEl.className = "def";
+      defEl.textContent = item.def || "(no definition)";
+      text.appendChild(wordEl);
+      text.appendChild(defEl);
+      const del = document.createElement("button");
+      del.className = "btn-danger";
+      del.textContent = "Delete";
+      del.addEventListener("click", () => {
+        words.splice(i, 1);
+        saveWords(words);
+        renderWordList();
+      });
+      div.appendChild(text);
+      div.appendChild(del);
+      wordList.appendChild(div);
+    });
+  }
+
+  function addWord() {
+    const word = wordInput.value.trim();
+    const def = defInput.value.trim();
+    if (!word) {
+      wordInput.focus();
+      return;
+    }
+    words.push({ word: word, def: def });
+    saveWords(words);
+    wordInput.value = "";
+    defInput.value = "";
+    renderWordList();
+    if (!storageOk) {
+      alert("Warning: could not save to browser storage (" + storageError + "). Words will be lost when you close this page. Try opening the app in the normal (non-private) browser window.");
+    }
+    wordInput.focus();
+  }
+
+  addBtn.addEventListener("click", addWord);
+  wordInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      defInput.focus();
+    }
+  });
+  defInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      addWord();
+    }
+  });
+
+  quizBtn.addEventListener("click", openQuizPicker);
+
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function openQuizPicker() {
+    if (words.length === 0) {
+      alert("Add some words to the bank before taking a quiz!");
+      return;
+    }
+    if (!words.some((item) => item.def && item.def.trim())) {
+      alert("Add a definition to at least one word before taking a quiz!");
+      return;
+    }
+    quizSelection = new Set();
+    homeView.classList.add("hidden");
+    quizSelectCard.classList.remove("hidden");
+    renderQuizOptions();
+  }
+
+  function renderQuizOptions() {
+    quizOptions.innerHTML = "";
+    words.forEach((item, index) => {
+      const hasDefinition = Boolean(item.def && item.def.trim());
+      const option = document.createElement("label");
+      option.className = "practice-option" + (hasDefinition ? "" : " is-unavailable");
+
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = quizSelection.has(index);
+      checkbox.disabled = !hasDefinition;
+      checkbox.addEventListener("change", () => {
+        if (checkbox.checked) {
+          quizSelection.add(index);
+        } else {
+          quizSelection.delete(index);
+        }
+        updateQuizStartButton();
+      });
+
+      const copy = document.createElement("div");
+      copy.className = "practice-option-copy";
+      const word = document.createElement("div");
+      word.className = "word";
+      word.textContent = item.word;
+      const definition = document.createElement("div");
+      definition.className = "practice-definition";
+      definition.textContent = hasDefinition ? item.def : "Add a definition to quiz this word.";
+      copy.appendChild(word);
+      copy.appendChild(definition);
+      option.appendChild(checkbox);
+      option.appendChild(copy);
+      quizOptions.appendChild(option);
+    });
+    updateQuizStartButton();
+  }
+
+  function updateQuizStartButton() {
+    startSelectedQuizBtn.disabled = quizSelection.size === 0;
+  }
+
+  function startQuiz() {
+    quizQueue = shuffle(Array.from(quizSelection)
+      .sort((a, b) => a - b)
+      .map((index) => words[index])
+      .filter((item) => item && item.def && item.def.trim()));
+    if (quizQueue.length === 0) return;
+
+    quizIndex = 0;
+    quizCorrect = 0;
+    quizSelectCard.classList.add("hidden");
+    quizCard.classList.remove("hidden");
+    renderQuestion();
+  }
+
+  function renderQuestion() {
+    currentCard = quizQueue[quizIndex];
+    quizWord.textContent = currentCard.word;
+    quizProgress.innerHTML =
+      `Question <span class="score">${quizIndex + 1}</span> of ${quizQueue.length}` +
+      ` &nbsp;|&nbsp; Score: <span class="score">${quizCorrect}</span>/${quizQueue.length}`;
+    quizInput.value = "";
+    quizInput.disabled = false;
+    feedback.classList.add("hidden");
+    answerBox.classList.add("hidden");
+    checkBtn.classList.remove("hidden");
+    checkBtn.disabled = false;
+    nextBtn.classList.add("hidden");
+    quizInput.focus();
+  }
+
+  function normalize(s) {
+    return s.trim().toLowerCase().replace(/[^a-z0-9\s]/gi, "").replace(/\s+/g, " ");
+  }
+
+  function checkAnswer() {
+    const userAnswer = normalize(quizInput.value);
+    const correct = normalize(currentCard.def || "");
+    const isCorrect = userAnswer !== "" && userAnswer === correct;
+
+    feedback.classList.remove("hidden");
+    answerBox.classList.remove("hidden");
+    correctAnswer.textContent = currentCard.def || "(no definition provided)";
+
+    if (isCorrect) {
+      quizCorrect++;
+      feedback.className = "feedback correct";
+      feedback.textContent = "Correct!";
+    } else {
+      feedback.className = "feedback incorrect";
+      feedback.textContent = userAnswer === "" ? "You left it blank. Here's the answer:" : "Not quite. Here's the right answer:";
+    }
+
+    const answered = quizIndex + 1;
+    quizProgress.innerHTML =
+      `Question <span class="score">${answered}</span> of ${quizQueue.length}` +
+      ` &nbsp;|&nbsp; Score: <span class="score">${quizCorrect}</span>/${quizQueue.length}`;
+
+    checkBtn.classList.add("hidden");
+    checkBtn.disabled = true;
+    quizInput.disabled = true;
+    nextBtn.classList.remove("hidden");
+    nextBtn.textContent = quizIndex === quizQueue.length - 1 ? "Finish Quiz" : "Next Word";
+    nextBtn.focus();
+  }
+
+  function nextQuestion() {
+    if (quizIndex >= quizQueue.length - 1) {
+      const pct = Math.round((quizCorrect / quizQueue.length) * 100);
+      alert(`Quiz complete! You got ${quizCorrect} of ${quizQueue.length} correct (${pct}%).`);
+      quitQuiz();
+      return;
+    }
+    quizIndex++;
+    renderQuestion();
+  }
+
+  function quitQuiz() {
+    showHome();
+  }
+
+  function showHome() {
+    stopPracticeSpeech();
+    quizSelectCard.classList.add("hidden");
+    quizCard.classList.add("hidden");
+    practiceSelectCard.classList.add("hidden");
+    practiceCard.classList.add("hidden");
+    homeView.classList.remove("hidden");
+    renderWordList();
+  }
+
+  checkBtn.addEventListener("click", checkAnswer);
+  nextBtn.addEventListener("click", nextQuestion);
+  quitBtn.addEventListener("click", quitQuiz);
+  selectAllQuizBtn.addEventListener("click", () => {
+    quizSelection = new Set(words
+      .map((item, index) => item.def && item.def.trim() ? index : null)
+      .filter((index) => index !== null));
+    renderQuizOptions();
+  });
+  clearQuizBtn.addEventListener("click", () => {
+    quizSelection = new Set();
+    renderQuizOptions();
+  });
+  startSelectedQuizBtn.addEventListener("click", startQuiz);
+  cancelQuizBtn.addEventListener("click", showHome);
+
+  function downloadFile(filename, content, mime) {
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  document.getElementById("download-app-btn").addEventListener("click", () => {
+    const html = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+    downloadFile("vocab-bank.html", html, "text/html");
+  });
+
+  document.getElementById("export-btn").addEventListener("click", () => {
+    if (words.length === 0) {
+      alert("Your word bank is empty. Add some words first!");
+      return;
+    }
+    downloadFile("vocab-bank-words.json", JSON.stringify(words, null, 2), "application/json");
+  });
+
+  function openPracticePicker() {
+    if (words.length === 0) {
+      alert("Add some words to the bank before practicing!");
+      return;
+    }
+    if (!words.some((item) => item.def && item.def.trim())) {
+      alert("Add a definition to at least one word before practicing!");
+      return;
+    }
+    practiceSelection = new Set();
+    homeView.classList.add("hidden");
+    practiceSelectCard.classList.remove("hidden");
+    renderPracticeOptions();
+  }
+
+  function renderPracticeOptions() {
+    practiceOptions.innerHTML = "";
+    words.forEach((item, index) => {
+      const hasDefinition = Boolean(item.def && item.def.trim());
+      const option = document.createElement("label");
+      option.className = "practice-option" + (hasDefinition ? "" : " is-unavailable");
+
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = practiceSelection.has(index);
+      checkbox.disabled = !hasDefinition;
+      checkbox.addEventListener("change", () => {
+        if (checkbox.checked) {
+          practiceSelection.add(index);
+        } else {
+          practiceSelection.delete(index);
+        }
+        updatePracticeStartButton();
+      });
+
+      const copy = document.createElement("div");
+      copy.className = "practice-option-copy";
+      const word = document.createElement("div");
+      word.className = "word";
+      word.textContent = item.word;
+      const definition = document.createElement("div");
+      definition.className = "practice-definition";
+      definition.textContent = hasDefinition ? item.def : "Add a definition to practice this word.";
+      copy.appendChild(word);
+      copy.appendChild(definition);
+      option.appendChild(checkbox);
+      option.appendChild(copy);
+      practiceOptions.appendChild(option);
+    });
+    updatePracticeStartButton();
+  }
+
+  function updatePracticeStartButton() {
+    startPracticeBtn.disabled = practiceSelection.size === 0;
+  }
+
+  function startPractice() {
+    practiceQueue = Array.from(practiceSelection)
+      .sort((a, b) => a - b)
+      .map((index) => words[index])
+      .filter((item) => item && item.def && item.def.trim());
+    if (practiceQueue.length === 0) return;
+
+    practiceIndex = 0;
+    practiceAdvancing = false;
+    practiceSelectCard.classList.add("hidden");
+    practiceCard.classList.remove("hidden");
+    renderPracticeQuestion();
+  }
+
+  function practiceTokens(text) {
+    const normalized = normalize(text);
+    return normalized ? normalized.split(" ") : [];
+  }
+
+  function matchingPracticeWords(typed, definition) {
+    const typedTokens = practiceTokens(typed);
+    const definitionTokens = practiceTokens(definition);
+    let matched = 0;
+    for (let i = 0; i < typedTokens.length && i < definitionTokens.length; i++) {
+      if (typedTokens[i] !== definitionTokens[i]) break;
+      matched++;
+    }
+    return matched;
+  }
+
+  function appendGuideText(className, text) {
+    const part = document.createElement("span");
+    part.className = className;
+    part.textContent = text;
+    practiceGuide.appendChild(part);
+  }
+
+  function updatePracticeGuide() {
+    const current = practiceQueue[practiceIndex];
+    const displayWords = current.def.trim().split(/\s+/);
+    const matched = matchingPracticeWords(practiceInput.value, current.def);
+    const nextWords = displayWords.slice(matched, matched + 3);
+
+    practiceGuide.innerHTML = "";
+    if (matched > 0) {
+      appendGuideText("typed", displayWords.slice(0, matched).join(" ") + " ");
+    }
+    appendGuideText("next", nextWords.join(" "));
+    if (matched + nextWords.length < displayWords.length) {
+      appendGuideText("remaining", " ...");
+    }
+  }
+
+  function highlightedPracticeWords() {
+    const current = practiceQueue[practiceIndex];
+    if (!current) return "";
+    const displayWords = current.def.trim().split(/\s+/);
+    const matched = matchingPracticeWords(practiceInput.value, current.def);
+    const groupStart = Math.floor(matched / 3) * 3;
+    return displayWords.slice(groupStart, groupStart + 3).join(" ");
+  }
+
+  function choosePracticeVoice() {
+    if (!("speechSynthesis" in window)) return;
+    const voices = window.speechSynthesis.getVoices();
+    const englishVoices = voices.filter((voice) => (voice.lang || "").toLowerCase().startsWith("en"));
+    practiceVoice = englishVoices.find((voice) => /natural|online|neural/i.test(voice.name))
+      || englishVoices.find((voice) => voice.default)
+      || englishVoices[0]
+      || null;
+  }
+
+  function stopPracticeSpeech() {
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+  }
+
+  function readPracticePrompt(force) {
+    const hint = highlightedPracticeWords();
+    if (!hint || !("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) return;
+    if (!force && hint === lastSpokenPracticeHint) return;
+
+    stopPracticeSpeech();
+    const utterance = new SpeechSynthesisUtterance(hint);
+    if (practiceVoice) utterance.voice = practiceVoice;
+    utterance.rate = 0.65;
+    utterance.pitch = 1;
+    lastSpokenPracticeHint = hint;
+    window.speechSynthesis.speak(utterance);
+  }
+
+  function renderPracticeQuestion() {
+    const current = practiceQueue[practiceIndex];
+    if (!current) {
+      finishPractice();
+      return;
+    }
+    practiceProgress.textContent = "Word " + (practiceIndex + 1) + " of " + practiceQueue.length;
+    practiceWord.textContent = current.word;
+    practiceInput.value = "";
+    practiceFeedback.classList.add("hidden");
+    lastSpokenPracticeHint = "";
+    updatePracticeGuide();
+    readPracticePrompt(false);
+    practiceInput.focus();
+  }
+
+  function completeCurrentPractice() {
+    practiceAdvancing = true;
+    practiceFeedback.className = "practice-feedback correct";
+    practiceFeedback.textContent = "Complete!";
+    practiceFeedback.classList.remove("hidden");
+    window.setTimeout(() => {
+      practiceIndex++;
+      practiceAdvancing = false;
+      if (practiceIndex >= practiceQueue.length) {
+        finishPractice();
+      } else {
+        renderPracticeQuestion();
+      }
+    }, 350);
+  }
+
+  function finishPractice() {
+    practiceQueue = [];
+    practiceAdvancing = false;
+    showHome();
+  }
+
+  openPracticeBtn.addEventListener("click", openPracticePicker);
+  selectAllPracticeBtn.addEventListener("click", () => {
+    practiceSelection = new Set(words
+      .map((item, index) => item.def && item.def.trim() ? index : null)
+      .filter((index) => index !== null));
+    renderPracticeOptions();
+  });
+  clearPracticeBtn.addEventListener("click", () => {
+    practiceSelection = new Set();
+    renderPracticeOptions();
+  });
+  startPracticeBtn.addEventListener("click", startPractice);
+  cancelPracticeBtn.addEventListener("click", showHome);
+  endPracticeBtn.addEventListener("click", finishPractice);
+  readPracticeBtn.addEventListener("click", () => readPracticePrompt(true));
+  if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
+    readPracticeBtn.disabled = true;
+    readPracticeBtn.textContent = "Voice Not Supported";
+  } else {
+    choosePracticeVoice();
+    window.speechSynthesis.addEventListener("voiceschanged", choosePracticeVoice);
+  }
+  practiceInput.addEventListener("input", () => {
+    if (practiceAdvancing) return;
+    const current = practiceQueue[practiceIndex];
+    if (!current) return;
+
+    const typed = normalize(practiceInput.value);
+    const definition = normalize(current.def);
+    updatePracticeGuide();
+    if (!typed) {
+      readPracticePrompt(false);
+      practiceFeedback.classList.add("hidden");
+      return;
+    }
+    if (!definition.startsWith(typed)) {
+      practiceFeedback.className = "practice-feedback incorrect";
+      practiceFeedback.textContent = "That does not match the guide yet. Correct the last word and keep going.";
+      practiceFeedback.classList.remove("hidden");
+      return;
+    }
+    if (typed === definition) {
+      stopPracticeSpeech();
+      completeCurrentPractice();
+      return;
+    }
+    readPracticePrompt(false);
+    practiceFeedback.classList.add("hidden");
+  });
+  quizInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (nextBtn.classList.contains("hidden")) {
+        checkAnswer();
+      } else {
+        nextQuestion();
+      }
+    }
+  });
+
+  renderWordList();
+</script>
+</body>
+</html>
